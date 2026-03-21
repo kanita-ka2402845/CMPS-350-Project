@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In</title>
+    <link rel="stylesheet" href="login_style.css">
+</head>
+<body>
+<div class="scene">
+    <div class="cover">
+ 
+        <img
+            src="book_cover.png"
+            alt="Folio journal cover"
+        >
+ 
+        <div class="login-wrap">
+ 
+            <div class="login-card">
+                <div class="login-tape"></div>
+ 
+                <div class="login-inner">
+ 
+                    <div class="card-logo">Name<span>.</span></div>
+
+                    <form id="loginForm" action="#" method="post">
+
+                        <div class="field">
+                            <label for="email">Email</label>
+                            <input type="email" name="email" id="email" placeholder="e.g.johndoe@gmail.com" required>
+                        </div>
+
+                        <div class="field">
+                            <label for="password">Password</label>
+                            <input type="password" name="password" id="password" placeholder="············" required>
+                        </div>
+
+                        <a href="#" class="forgot">Forgot password?</a>
+
+                        <button type="submit" class="submit-btn" id="submitBtn">
+                            Log In
+                        </button>
+
+                    </form>
+
+                    <div class="or-divider">
+                        <div class="or-line"></div>
+                        <div class="or-text">or continue with</div>
+                        <div class="or-line"></div>
+                    </div>
+
+                    <div class="social-row">
+                        <button class="social-btn" onclick="socialLogin('Google')">
+                            Google
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="signup-card">
+                <span class="signup-text">
+                    Don't have an account?
+                    <a href="#" class="signup-link">Create one.</a>
+                </span>
+            </div>
+
+            <div class="app-hint">
+                <p>Get the app</p>
+                <div class="app-badges">
+                    <button class="app-badge">Play Store</button>
+                    <button class="app-badge">App Store</button>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
