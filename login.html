@@ -62,7 +62,7 @@
             <div class="signup-card">
                 <span class="signup-text">
                     Don't have an account?
-                    <a href="#" class="signup-link">Create one.</a>
+                    <a href="signup.html" class="signup-link">Create one.</a>
                 </span>
             </div>
 
@@ -77,6 +77,58 @@
 
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded',function (){
+            const loginForm = document.getElementById('loginForm');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+
+            console.log('Login page loaded');
+
+      loginForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        console.log('Login button clicked');
+
+        const email = emailInput.value.trim().toLowerCase();
+        const password = passwordInput.value;
+
+        if (!email || !password) {
+            alert('Please fill in all fields.');
+            return;
+        }
+
+        const users = JSON.parse(localStorage.getItem('folioUsers') || '{}');
+        console.log('Users in localStorage:', users);
+
+        if (!users[email]) {
+            alert('No account found with this email.');
+            return;
+        }
+
+        if (users[email].password !== password) {
+            alert('Incorrect password.');
+            return;
+        }
+
+        localStorage.setItem('folioCurrentUser', JSON.stringify({
+            email: users[email].email,
+            isLoggedIn: true
+        }));
+
+        alert('Login successful!');
+        window.location.href = 'feed.html';
+        });
+    });
+
+    function socialLogin(provider){
+        alert(provider + 'login is not connected yet')
+    }
+
+    </script>
+
+   
+
 
 </body>
 </html>
