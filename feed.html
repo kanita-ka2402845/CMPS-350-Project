@@ -147,6 +147,224 @@
     </div>
 
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded",function(){
+        const currentUser=JSON.parse(localStorage.getItem("folioCurrentUser")||"null");
+
+        if(!currentUser || !currentUser.isLoggedIn){
+            alert("Please log in first");
+            window.location.href="login.html";
+            return;
+        }
+
+        const userEmail=currentUser.email;
+
+        let savedPosts=JSON.parse(localStorage.getItem("folioPosts")|| "{}");
+        let userPosts=JSON.parse(localStorage.getItem("folioUserPosts")||"{}");
+        let followData=JSON.parse(localStorage.getItem("folioFollows")||"{}");
+
+
+        setupProfileButton(userEmail);
+        setupCreatePostButton(userEmail,userPosts);
+        renderUserPosts(userPosts);
+        initializeAllPosts();
+
+        function setupProfileButton(userEmail){
+            const profileBtn=document.querySelector(".profile-btn");
+
+            if(!profileBtn)return;
+
+            profileBtn.innerHTML=userEmail.charAt(0).toUpperCase();
+
+            profileBtn.addEventListener("click",function(e){
+                e.preventDefault();
+                window.location.href="profile.html";
+            });
+        }
+
+        function setupCreatePostButton(userEmail,userPosts){
+            const addPostBtn=document.createElement("button");
+            addPostBtn.textContent = "+ Post";
+            addPostBtn.style.position = "fixed";
+            addPostBtn.style.bottom = "20px";
+            addPostBtn.style.right = "20px";
+            addPostBtn.style.padding = "12px 18px";
+            addPostBtn.style.border = "none";
+            addPostBtn.style.borderRadius = "999px";
+            addPostBtn.style.background = "#2f2a26";
+            addPostBtn.style.color = "#fff";
+            addPostBtn.style.cursor = "pointer";
+            addPostBtn.style.fontSize = "14px";
+            addPostBtn.style.zIndex = "999";
+
+            document.body.appendChild(addPostBtn);
+
+            addPostBtn.addEventListener("click",function(){
+                const tect=prompt("post here: ");
+
+                if(!text||!tex.trim())return;
+
+                const newPost={
+                    id:"user-post-"+Date.now,
+                    user: userEmail,
+                    content: text.trim(),
+                    likes: 0,
+                    comments: 0,
+                    likedBy: [],
+                    commentList : []
+                };
+                userPosts.unshift(newPost);
+                localStorage.setItem("folioUserPosts",JSON.stringify(userPosts));
+                location.reload();
+            });
+        
+        }
+
+        function renderUserPosts(userPosts){
+            const firstPost=document.querySelector(".post-card");
+            const parent = firstPost ? firstPost.parentElement : document.body;
+
+            userPosts.slice().reverse().forEach(function (post){
+                const card=document.createElement("div");
+                card.className="post-card";
+                card.setAttribute("data-post-id",post.id);
+                card.setAttribute("data-user-post","true");
+
+                card.innerHTML=`
+                   <div class="post-header">
+                       <h3>${post.user}</h3>
+                   </div>
+                   <p>${post.content}</p>
+                   <div class="post-actions">
+                       <button class="action-btn">
+                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg> 0
+                       </button>
+                       <button class="action-btn">
+                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                           </svg> 0
+                       </button>
+                   </div>
+                `;
+
+                if (firstPost){
+                    parent.insertBefore(card,firstPost);
+                }else{
+                    parent.appendChild(card);
+                }
+            });
+        }
+
+        function initializeAllPosts(){
+            const postCrads=document.querySelectorAll(".post-card");
+
+            postCrads.forEach((card,index)=>{
+                let postId=card.getAttribute("data-post-id");
+                const isUserPost=card.getAttribute("data-user-post")==="true";
+                const actionButtons=card.querySelectorAll(".action-btn");
+                const authorEl=card.querySelector(".post-header h3");
+
+                if(!postId){
+                    postId="static-post-"+index;
+                    card.setAttribute("data-post-id",postId);
+                }
+
+                if(!actionButtons[0]||!actionButtons[1])return;
+
+                const likeBtn=actionButtons[0];
+                const commentBtn=actionButtons[1];
+                const aurthorName=authorEl ? authorEl.textContent.trim(): "Unknown";
+
+                if(isUserPost){
+                    const matchingPost=userPosts.find(post=>post.id===postId);
+
+
+                    if(matchingPost){
+                        savedPosts[postId]={
+                            likes: matchingPost.likes || 0,
+                            comments : matchingPost.comments || 0,
+                            likedBy : matchingPost.likedBy || [],
+                            commentList: matchingPost.commentList || [],
+                            author : matchingPost.user
+                        };
+                    }
+                }else{
+                    const initiaLikes=extractCountFromButton(likeBtn);
+                    const initialComments=extractCountFromButton(commentBtn);
+
+                    if(!savedPosts[postId]){
+                        savedPosts[postId]={
+                            likes : initiaLikes,
+                            comments : initialComments,
+                            likedBy : [],
+                            author : aurthorName
+                        };
+                    }
+                    if (!savedPosts[postId].commentList){
+                        savedPosts[postId].commentList=[];
+                    }
+
+                    if(!savedPosts[postId].likedBy){
+                        savedPosts[postId].likedBy=[];
+                    }
+
+                    if(!savedPosts[postId].author){
+                        savedPosts[postId].author=aurthorName;
+                    }
+                }
+
+                updateButtonCount(likeBtn,savedPosts[postId.likes]);
+                updateButtonCount(commentBtn,savedPosts[postId].comments);
+
+                setupLikeButton(postId,likeBtn,userEmail);
+                setupCommentSection(card,postId,commentBtn,userEmail);
+                setupFollowButton(authorEl,savedPosts[postId].author || aurthorName,userEmail);
+
+            });
+
+            localStorage.setItem("folioPosts",JSON.stringify(savedPosts));
+
+        }
+
+        function setupLikeButton(postId,likeBtn,userEmail){
+            const alreeadyLiked=savedPosts[postId].likedBy.includes(userEmail);
+
+            if(alreeadyLiked){
+                likeBtn.style.color="#b84c4c";
+                likeBtn.style.fontWeight="600";
+            }
+
+            likeBtn.addEventListener("click",function(){
+                const liked=savedPosts[postId].likedBy.includes(userEmail);
+
+                if(liked){
+                    savedPosts[postId].likes--;
+                    savedPosts[postId].likedBy=savedPosts[postId].likeBtn.filter(function(email){
+                        return email !==userEmail;
+                    });
+                    likeBtn.style.color="";
+                    likeBtn.style.fontWeight="";
+                }else{
+                    savedPosts[postId].likes++;
+                    savedPosts[postId].likedBy.push(userEmail);
+                    likeBtn.style.color="b84c4c";
+                    likeBtn.style.fontWeight="600";
+                }
+
+                updateButtonCount(likeBtn,savedPosts[postId].likes);
+                syncUserPost(postId);
+                localStorage.setItem("folioPosts",JSON.stringify(savedPosts));
+
+            });
+        }
+
+        
+
+
+    })
+</script>
 
 </body>
 </html>
