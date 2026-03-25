@@ -6,6 +6,59 @@
     <title>Sign In</title>
     <link rel="stylesheet" href="login_style.css">
 </head>
+<script>
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    const users = JSON.parse(localStorage.getItem('folioUsers') || '{}');
+
+    let message = '';
+
+    if (!users[email]) {
+        message = 'No account found with that email.';
+    } 
+    else if (users[email].password !== password) {
+        message = 'Incorrect password.';
+    } 
+    else {
+        message = 'Login successful!';
+        
+        // Optional redirect after 1.5 sec
+        setTimeout(() => {
+            window.location.href = 'folio-feed.html';
+        }, 1500);
+    }
+
+    showMessage(message);
+});
+
+function showMessage(text) {
+    let msgBox = document.getElementById('loginMessage');
+
+    if (!msgBox) {
+        msgBox = document.createElement('div');
+        msgBox.id = 'loginMessage';
+
+        msgBox.style.marginTop = '10px';
+        msgBox.style.fontSize = '10px';
+        msgBox.style.fontFamily = 'DM Mono, monospace';
+        msgBox.style.textAlign = 'center';
+
+        document.querySelector('.login-card').appendChild(msgBox);
+    }
+
+    msgBox.textContent = text;
+
+    if (text.includes('successful')) {
+        msgBox.style.color = 'green';
+    } else {
+        msgBox.style.color = 'red';
+    }
+}
+</script>
 <body>
 <div class="scene">
     <div class="cover">
