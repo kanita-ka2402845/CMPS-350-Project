@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+    <link rel="stylesheet" href="login_style.css">
+</head>
+<body>
+
+<div class="scene">
+    <div class="cover">
+
+        <img src="book_cover.png" alt="cover">
+
+        <div class="login-wrap">
+
+            <div class="login-card">
+                <div class="login-tape"></div>
+
+                <div class="login-inner">
+
+                    <div class="card-logo">Sign<span>Up</span></div>
+
+                    <form id="signupForm">
+
+                        <div class="field">
+                            <label>Email</label>
+                            <input type="email" id="email" required>
+                        </div>
+
+                        <div class="field">
+                            <label>Password</label>
+                            <input type="password" id="password" required>
+                        </div>
+
+                        <div class="field">
+                            <label>Confirm Password</label>
+                            <input type="password" id="confirmPassword" required>
+                        </div>
+
+                        <button class="submit-btn">Sign Up</button>
+                    </form>
+
+                </div>
+            </div>
+
+            <div class="signup-card">
+                <span class="signup-text">
+                    Already have an account?
+                    <a href="login.html" class="signup-link">Log in.</a>
+                </span>
+            </div>
+
+             <div class="app-hint">
+                <p>Get the app</p>
+                <div class="app-badges">
+                    <button class="app-badge" type="button">Play Store</button>
+                    <button class="app-badge" type="button">App Store</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+// Email validation
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+// Password strength check
+function isStrongPassword(password) {
+    return (
+        /[A-Z]/.test(password) &&
+        /[a-z]/.test(password) &&
+        /[0-9]/.test(password) &&
+        /[^A-Za-z0-9]/.test(password)
+    );
+}
+
+document.getElementById('signupForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const email = document.getElementById('email').value.trim().toLowerCase();
+    const password = document.getElementById('password').value;
+    const confirm = document.getElementById('confirmPassword').value;
+
+    // Validation
+    if (!isValidEmail(email)) {
+        alert('Enter a valid email.');
+        return;
+    }
+
+    if (!isStrongPassword(password)) {
+        alert('Password must contain:\nUppercase, lowercase, number, special character.');
+        return;
+    }
+
+    if (password !== confirm) {
+        alert('Passwords do not match.');
+        return;
+    }
+
+    const users = JSON.parse(localStorage.getItem('Users') || '{}');
+
+    if (users[email]) {
+        alert('Account already exists.');
+        return;
+    }
+
+    // Save as JSON in localStorage
+    users[email] = { email, password };
+    localStorage.setItem('Users', JSON.stringify(users));
+
+    alert('Account created successfully');
+
+    // Redirect to login
+    window.location.href = 'login.html';
+});
+</script>
+
+</body>
+</html>

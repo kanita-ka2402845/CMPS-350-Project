@@ -3,37 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In</title>
+    <title>Sign In — Bookgram</title>
     <link rel="stylesheet" href="login_style.css">
 </head>
 <body>
+
 <div class="scene">
     <div class="cover">
- 
-        <img
-            src="book_cover.png"
-            alt="Folio journal cover"
-        >
- 
+
+        <img src="book_cover.png" alt="Bookgram journal cover">
+
         <div class="login-wrap">
- 
+
             <div class="login-card">
                 <div class="login-tape"></div>
- 
+
                 <div class="login-inner">
- 
-                    <div class="card-logo">Name<span>.</span></div>
+
+                    <div class="card-logo">Bookgram<span>.</span></div>
 
                     <form id="loginForm" action="#" method="post">
 
                         <div class="field">
                             <label for="email">Email</label>
-                            <input type="email" name="email" id="email" placeholder="e.g.johndoe@gmail.com" required>
+                            <input type="email" name="email" id="email"
+                                   placeholder="e.g. johndoe@gmail.com" required>
                         </div>
 
                         <div class="field">
                             <label for="password">Password</label>
-                            <input type="password" name="password" id="password" placeholder="············" required>
+                            <input type="password" name="password" id="password"
+                                   placeholder="············" required>
                         </div>
 
                         <a href="#" class="forgot">Forgot password?</a>
@@ -44,6 +44,9 @@
 
                     </form>
 
+                    <!-- feedback message injected here by JS -->
+                    <p id="loginMessage" class="login-message" aria-live="polite"></p>
+
                     <div class="or-divider">
                         <div class="or-line"></div>
                         <div class="or-text">or continue with</div>
@@ -51,32 +54,33 @@
                     </div>
 
                     <div class="social-row">
-                        <button class="social-btn" onclick="socialLogin('Google')">
+                        <button class="social-btn" id="googleBtn" type="button">
                             Google
                         </button>
                     </div>
 
                 </div>
-            </div>
+            </div><!-- /login-card -->
 
             <div class="signup-card">
                 <span class="signup-text">
                     Don't have an account?
-                    <a href="#" class="signup-link">Create one.</a>
+                    <a href="signup.html" class="signup-link">Create one.</a>
                 </span>
             </div>
 
             <div class="app-hint">
                 <p>Get the app</p>
                 <div class="app-badges">
-                    <button class="app-badge">Play Store</button>
-                    <button class="app-badge">App Store</button>
-
+                    <button class="app-badge" type="button">Play Store</button>
+                    <button class="app-badge" type="button">App Store</button>
                 </div>
             </div>
 
         </div>
     </div>
+</div>
 
+<script src="login.js"></script>
 </body>
 </html>

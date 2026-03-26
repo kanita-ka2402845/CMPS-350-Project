@@ -291,6 +291,9 @@
             color: var(--ink2);
         }
 
+   
+
+
 @media (max-width: 767px) {
      .cover {
                 width: 100vw;

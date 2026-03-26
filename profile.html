@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Folio — Profile</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="feed_style.css">
+    <link rel="stylesheet" href="profile_style.css">
+</head>
+
+<body>
+
+<div class="book">
+
+    <div class="page left">
+
+        <div class="page-header">
+            <a href="feed.html" class="site-logo">Name<span>.</span></a>
+            <span class="page-num">01</span>
+        </div>
+
+        <div class="page-content profile-layout">
+
+            <div class="profile-card">
+                <div class="profile-avatar" id="profileAvatar">P</div>
+
+                <div class="profile-info">
+                    <h2 class="profile-name" id="profileName">User</h2>
+                    <p class="profile-handle" id="profileHandle">@user</p>
+                    <p class="profile-email" id="profileEmail">email</p>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <div class="section-label">Bio</div>
+                <p id="profileBio">No bio yet.</p>
+            </div>
+
+            <div class="profile-section">
+                <div class="section-label">Edit Profile</div>
+
+                <label>Name</label>
+                <input type="text" id="nameInput">
+
+                <label>Bio</label>
+                <textarea id="bioInput"></textarea>
+
+                <button id="saveBtn" class="nav-btn">Save</button>
+            </div>
+
+        </div>
+
+        <div class="page-footer">
+            <button class="nav-btn" onclick="window.location.href='feed.html'">
+                ← Back
+            </button>
+        </div>
+
+    </div>
+
+    <div class="spine"></div>
+
+    <div class="page right">
+
+        <div class="page-header">
+            <span class="page-num">02</span>
+        </div>
+
+        <div class="page-content" id="userPosts">
+            <div class="empty-posts">
+                No posts yet.
+            </div>
+        </div>
+
+        <div class="page-footer">
+            <button class="nav-btn">Profile</button>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="profile.js"></script>
+
+</body>
+</html>
