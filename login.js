@@ -1,9 +1,4 @@
-/* ═══════════════════════════════════════════════════════
-   login.js  —  Bookgram  |  Phase 1
-   Storage contract (matches signup.html and feed.js):
-     "Users"       → { [email]: { email, password } }
-     "currentUser" → plain email string
-   ═══════════════════════════════════════════════════════ */
+
 
 "use strict";
 
