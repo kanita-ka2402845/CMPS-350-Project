@@ -6,6 +6,59 @@
     <title>Sign In — Bookgram</title>
     <link rel="stylesheet" href="login_style.css">
 </head>
+<script>
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    const users = JSON.parse(localStorage.getItem('folioUsers') || '{}');
+
+    let message = '';
+
+    if (!users[email]) {
+        message = 'No account found with that email.';
+    } 
+    else if (users[email].password !== password) {
+        message = 'Incorrect password.';
+    } 
+    else {
+        message = 'Login successful!';
+        
+        // Optional redirect after 1.5 sec
+        setTimeout(() => {
+            window.location.href = 'folio-feed.html';
+        }, 1500);
+    }
+
+    showMessage(message);
+});
+
+function showMessage(text) {
+    let msgBox = document.getElementById('loginMessage');
+
+    if (!msgBox) {
+        msgBox = document.createElement('div');
+        msgBox.id = 'loginMessage';
+
+        msgBox.style.marginTop = '10px';
+        msgBox.style.fontSize = '10px';
+        msgBox.style.fontFamily = 'DM Mono, monospace';
+        msgBox.style.textAlign = 'center';
+
+        document.querySelector('.login-card').appendChild(msgBox);
+    }
+
+    msgBox.textContent = text;
+
+    if (text.includes('successful')) {
+        msgBox.style.color = 'green';
+    } else {
+        msgBox.style.color = 'red';
+    }
+}
+</script>
 <body>
 
 <div class="scene">
@@ -81,6 +134,61 @@
     </div>
 </div>
 
+<<<<<<< HEAD
 <script src="login.js"></script>
+=======
+    <script>
+        document.addEventListener('DOMContentLoaded',function (){
+            const loginForm = document.getElementById('loginForm');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+
+            console.log('Login page loaded');
+
+      loginForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        console.log('Login button clicked');
+
+        const email = emailInput.value.trim().toLowerCase();
+        const password = passwordInput.value;
+
+        if (!email || !password) {
+            alert('Please fill in all fields.');
+            return;
+        }
+
+        const users = JSON.parse(localStorage.getItem('folioUsers') || '{}');
+        console.log('Users in localStorage:', users);
+
+        if (!users[email]) {
+            alert('No account found with this email.');
+            return;
+        }
+
+        if (users[email].password !== password) {
+            alert('Incorrect password.');
+            return;
+        }
+
+        localStorage.setItem('folioCurrentUser', JSON.stringify({
+            email: users[email].email,
+            isLoggedIn: true
+        }));
+
+        alert('Login successful!');
+        window.location.href = 'feed.html';
+        });
+    });
+
+    function socialLogin(provider){
+        alert(provider + 'login is not connected yet')
+    }
+
+    </script>
+
+   
+
+
+>>>>>>> 7cc398a4e999bfb3e8eecdadc80bd31789b89748
 </body>
 </html>
