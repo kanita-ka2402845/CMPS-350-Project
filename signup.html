@@ -52,7 +52,6 @@
                 </span>
             </div>
 
-<<<<<<< HEAD
              <div class="app-hint">
                 <p>Get the app</p>
                 <div class="app-badges">
@@ -61,8 +60,6 @@
                 </div>
             </div>
 
-=======
->>>>>>> 7cc398a4e999bfb3e8eecdadc80bd31789b89748
         </div>
     </div>
 </div>
@@ -106,11 +103,7 @@ document.getElementById('signupForm').addEventListener('submit', function(e) {
         return;
     }
 
-<<<<<<< HEAD
     const users = JSON.parse(localStorage.getItem('Users') || '{}');
-=======
-    const users = JSON.parse(localStorage.getItem('folioUsers') || '{}');
->>>>>>> 7cc398a4e999bfb3e8eecdadc80bd31789b89748
 
     if (users[email]) {
         alert('Account already exists.');
@@ -119,11 +112,7 @@ document.getElementById('signupForm').addEventListener('submit', function(e) {
 
     // Save as JSON in localStorage
     users[email] = { email, password };
-<<<<<<< HEAD
     localStorage.setItem('Users', JSON.stringify(users));
-=======
-    localStorage.setItem('folioUsers', JSON.stringify(users));
->>>>>>> 7cc398a4e999bfb3e8eecdadc80bd31789b89748
 
     alert('Account created successfully');
 
