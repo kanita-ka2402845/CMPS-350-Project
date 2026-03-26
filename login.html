@@ -1,1 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In — Bookgram</title>
+    <link rel="stylesheet" href="login_style.css">
+</head>
+<script>
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
 
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    const users = JSON.parse(localStorage.getItem('folioUsers') || '{}');
+
+    let message = '';
+
+    if (!users[email]) {
+        message = 'No account found with that email.';
+    } 
+    else if (users[email].password !== password) {
+        message = 'Incorrect password.';
+    } 
+    else {
+        message = 'Login successful!';
+        
+        // Optional redirect after 1.5 sec
+        setTimeout(() => {
+            window.location.href = 'folio-feed.html';
+        }, 1500);
+    }
+
+    showMessage(message);
+});
+
+function showMessage(text) {
+    let msgBox = document.getElementById('loginMessage');
+
+    if (!msgBox) {
+        msgBox = document.createElement('div');
+        msgBox.id = 'loginMessage';
+
+        msgBox.style.marginTop = '10px';
+        msgBox.style.fontSize = '10px';
+        msgBox.style.fontFamily = 'DM Mono, monospace';
+        msgBox.style.textAlign = 'center';
+
+        document.querySelector('.login-card').appendChild(msgBox);
+    }
+
+    msgBox.textContent = text;
+
+    if (text.includes('successful')) {
+        msgBox.style.color = 'green';
+    } else {
+        msgBox.style.color = 'red';
+    }
+}
+</script>
+<body>
+
+<div class="scene">
+    <div class="cover">
+
+        <img src="book_cover.png" alt="Bookgram journal cover">
+
+        <div class="login-wrap">
+
+            <div class="login-card">
+                <div class="login-tape"></div>
+
+                <div class="login-inner">
+
+                    <div class="card-logo">Bookgram<span>.</span></div>
+
+                    <form id="loginForm" action="#" method="post">
+
+                        <div class="field">
+                            <label for="email">Email</label>
+                            <input type="email" name="email" id="email"
+                                   placeholder="e.g. johndoe@gmail.com" required>
+                        </div>
+
+                        <div class="field">
+                            <label for="password">Password</label>
+                            <input type="password" name="password" id="password"
+                                   placeholder="············" required>
+                        </div>
+
+                        <a href="#" class="forgot">Forgot password?</a>
+
+                        <button type="submit" class="submit-btn" id="submitBtn">
+                            Log In
+                        </button>
+
+                    </form>
+
+                    <!-- feedback message injected here by JS -->
+                    <p id="loginMessage" class="login-message" aria-live="polite"></p>
+
+                    <div class="or-divider">
+                        <div class="or-line"></div>
+                        <div class="or-text">or continue with</div>
+                        <div class="or-line"></div>
+                    </div>
+
+                    <div class="social-row">
+                        <button class="social-btn" id="googleBtn" type="button">
+                            Google
+                        </button>
+                    </div>
+
+                </div>
+            </div><!-- /login-card -->
+
+            <div class="signup-card">
+                <span class="signup-text">
+                    Don't have an account?
+                    <a href="signup.html" class="signup-link">Create one.</a>
+                </span>
+            </div>
+
+            <div class="app-hint">
+                <p>Get the app</p>
+                <div class="app-badges">
+                    <button class="app-badge" type="button">Play Store</button>
+                    <button class="app-badge" type="button">App Store</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<<<<<<< HEAD
+<script src="login.js"></script>
+=======
+    <script>
+        document.addEventListener('DOMContentLoaded',function (){
+            const loginForm = document.getElementById('loginForm');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+
+            console.log('Login page loaded');
+
+      loginForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        console.log('Login button clicked');
+
+        const email = emailInput.value.trim().toLowerCase();
+        const password = passwordInput.value;
+
+        if (!email || !password) {
+            alert('Please fill in all fields.');
+            return;
+        }
+
+        const users = JSON.parse(localStorage.getItem('folioUsers') || '{}');
+        console.log('Users in localStorage:', users);
+
+        if (!users[email]) {
+            alert('No account found with this email.');
+            return;
+        }
+
+        if (users[email].password !== password) {
+            alert('Incorrect password.');
+            return;
+        }
+
+        localStorage.setItem('folioCurrentUser', JSON.stringify({
+            email: users[email].email,
+            isLoggedIn: true
+        }));
+
+        alert('Login successful!');
+        window.location.href = 'feed.html';
+        });
+    });
+
+    function socialLogin(provider){
+        alert(provider + 'login is not connected yet')
+    }
+
+    </script>
+
+   
+
+
+>>>>>>> 7cc398a4e999bfb3e8eecdadc80bd31789b89748
+</body>
+</html>
