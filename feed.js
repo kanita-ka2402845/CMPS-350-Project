@@ -848,7 +848,7 @@ function closeCreateModal() {
     renderPosts();
 
 }); // end of DOM loading
-=======
+
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "follow-injected-btn";

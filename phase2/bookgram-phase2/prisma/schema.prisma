@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator erd {
+  provider = "prisma-erd-generator"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  username     String    @unique
+  email        String    @unique
+  password     String
+  fullName     String?
+  bio          String?
+  profileImage String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  posts        Post[]
+  comments     Comment[]
+  likes        Like[]
+
+  followers    Follow[]  @relation("UserFollowers")
+  following    Follow[]  @relation("UserFollowing")
+}
+
+model Post {
+  id         Int        @id @default(autoincrement())
+  content    String
+  imageUrl   String?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  userId     Int
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  comments   Comment[]
+  likes      Like[]
+  
+}
+
+model Comment {
+  id         Int       @id @default(autoincrement())
+  content    String
+  createdAt  DateTime  @default(now())
+
+  userId     Int
+  postId     Int
+
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post       Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model Like {
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now())
+
+  userId     Int
+  postId     Int
+
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post       Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+}
+
+model Follow {
+  id           Int       @id @default(autoincrement())
+  createdAt    DateTime  @default(now())
+
+  followerId   Int
+  followingId  Int
+
+  follower     User      @relation("UserFollowers", fields: [followerId], references: [id], onDelete: Cascade)
+  following    User      @relation("UserFollowing", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
+}
+
