@@ -162,7 +162,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\fatim\\OneDrive\\Desktop\\cmps350-github\\CMPS-350-Project\\phase2\\bookgram-phase2\\frontend\\generated\\prisma",
+      "value": "/Users/maha/Desktop/CMPS-350-Project/phase2/bookgram-phase2/frontend/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -171,18 +171,19 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "windows",
+        "value": "darwin",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\fatim\\OneDrive\\Desktop\\cmps350-github\\CMPS-350-Project\\phase2\\bookgram-phase2\\prisma\\schema.prisma",
+    "sourceFilePath": "/Users/maha/Desktop/CMPS-350-Project/phase2/bookgram-phase2/frontend/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null
+    "rootEnvPath": null,
+    "schemaEnvPath": "../../.env"
   },
-  "relativePath": "../../../prisma",
+  "relativePath": "../../prisma",
   "clientVersion": "6.19.3",
   "engineVersion": "c2990dca591cba766e3b7ef5d9e8a84796e47ab7",
   "datasourceNames": [
@@ -198,8 +199,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../frontend/generated/prisma\"\n}\n\n// generator erd {\n//   provider = \"prisma-erd-generator\"\n// }\n\ndatasource db {\n  provider = \"sqlite\"\n  url      = \"file:./dev.db\"\n}\n\nmodel User {\n  id           Int      @id @default(autoincrement())\n  username     String   @unique\n  email        String   @unique\n  password     String\n  fullName     String?\n  bio          String?\n  profileImage String?\n  createdAt    DateTime @default(now())\n  updatedAt    DateTime @updatedAt\n\n  posts    Post[]\n  comments Comment[]\n  likes    Like[]\n\n  followers Follow[] @relation(\"UserFollowers\")\n  following Follow[] @relation(\"UserFollowing\")\n}\n\nmodel Post {\n  id        Int      @id @default(autoincrement())\n  content   String\n  imageUrl  String?\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  userId Int\n  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  comments Comment[]\n  likes    Like[]\n}\n\nmodel Comment {\n  id        Int      @id @default(autoincrement())\n  content   String\n  createdAt DateTime @default(now())\n\n  userId Int\n  postId Int\n\n  user User @relation(fields: [userId], references: [id], onDelete: Cascade)\n  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)\n}\n\nmodel Like {\n  id        Int      @id @default(autoincrement())\n  createdAt DateTime @default(now())\n\n  userId Int\n  postId Int\n\n  user User @relation(fields: [userId], references: [id], onDelete: Cascade)\n  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)\n\n  @@unique([userId, postId])\n}\n\nmodel Follow {\n  id        Int      @id @default(autoincrement())\n  createdAt DateTime @default(now())\n\n  followerId  Int\n  followingId Int\n\n  follower  User @relation(\"UserFollowers\", fields: [followerId], references: [id], onDelete: Cascade)\n  following User @relation(\"UserFollowing\", fields: [followingId], references: [id], onDelete: Cascade)\n\n  @@unique([followerId, followingId])\n}\n",
-  "inlineSchemaHash": "89a8c2da1bf010fbe86d8c065308354d67751d6aa263fe85f9f152dc551e338f",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\n// generator erd {\n//   provider = \"prisma-erd-generator\"\n// }\n\ndatasource db {\n  provider = \"sqlite\"\n  url      = \"file:./dev.db\"\n}\n\nmodel User {\n  id           Int      @id @default(autoincrement())\n  username     String   @unique\n  email        String   @unique\n  password     String\n  fullName     String?\n  bio          String?\n  profileImage String?\n  createdAt    DateTime @default(now())\n  updatedAt    DateTime @updatedAt\n\n  posts    Post[]\n  comments Comment[]\n  likes    Like[]\n\n  followers Follow[] @relation(\"UserFollowers\")\n  following Follow[] @relation(\"UserFollowing\")\n}\n\nmodel Post {\n  id        Int      @id @default(autoincrement())\n  content   String\n  imageUrl  String?\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  userId Int\n  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  comments Comment[]\n  likes    Like[]\n}\n\nmodel Comment {\n  id        Int      @id @default(autoincrement())\n  content   String\n  createdAt DateTime @default(now())\n\n  userId Int\n  postId Int\n\n  user User @relation(fields: [userId], references: [id], onDelete: Cascade)\n  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)\n}\n\nmodel Like {\n  id        Int      @id @default(autoincrement())\n  createdAt DateTime @default(now())\n\n  userId Int\n  postId Int\n\n  user User @relation(fields: [userId], references: [id], onDelete: Cascade)\n  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)\n\n  @@unique([userId, postId])\n}\n\nmodel Follow {\n  id        Int      @id @default(autoincrement())\n  createdAt DateTime @default(now())\n\n  followerId  Int\n  followingId Int\n\n  follower  User @relation(\"UserFollowers\", fields: [followerId], references: [id], onDelete: Cascade)\n  following User @relation(\"UserFollowing\", fields: [followingId], references: [id], onDelete: Cascade)\n\n  @@unique([followerId, followingId])\n}\n",
+  "inlineSchemaHash": "3c88e80b3c071cf38f27b42b4d34b65126e1c5da746499ce70a533ca1ee612c7",
   "copyEngine": true
 }
 config.dirname = '/'
