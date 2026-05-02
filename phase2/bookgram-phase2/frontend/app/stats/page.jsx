@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 import { useEffect, useState } from "react";
 
@@ -56,8 +57,10 @@ export default function StatsPage(){
         { title: "Likes", value: totals.likes || 0 }, 
         { title: "Comments", value: totals.comments || 0 },
         { title: "Average Followers Per User", value: stats.avgFollowersPerUser || 0 },
-        { title: "Average Posts Per User", value: stats.avgPostsPerUser || 0 }
-    ];
+        { title: "Average Posts Per User", value: stats.avgPostsPerUser || 0 },
+        { title: "Average Likes Per Post", value: stats.avgLikesPerPost || 0 },
+        { title: "Average Comments Per Post", value: stats.avgCommentsPerPost || 0 }
+      ];
 
     return (
         <main className="min-h-screen bg-[#3d3528] p-6 text-[#1c1710]"> 
@@ -73,28 +76,24 @@ export default function StatsPage(){
                     </h1>
 
                     <p className="mt-2 max-w-2xl text-sm text-[#3d3528]">
-                        This page shows six useful statistics about the Bookgram platform.
+                        This page shows eight useful statistics about the Bookgram platform.
                     </p>
                 </div>
+                <div className="mt-4 flex gap-3">
+    <Link
+      href="/"
+      className="rounded border border-[#3d3528] px-4 py-2 text-sm text-[#3d3528]"
+    >
+      Home
+    </Link>
 
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {cards.map(function (card) {
-                        return (
-                            <div
-                                key={card.title}
-                                className="rounded-sm bg-white p-4 shadow"
-                            >
-                                <p className="text-xs uppercase tracking-widest text-[#8a7e6e]">
-                                    {card.title}
-                                </p>
-
-                                <p className="mt-3 text-3xl italic"> 
-                                    {card.value}
-                                </p>
-                            </div>
-                        );
-                    })}
-                </div>
+    <Link
+      href="/posts"
+      className="rounded bg-[#3d3528] px-4 py-2 text-sm text-white"
+    >
+      View Posts
+    </Link>
+  </div>
 
             </section>
         </main> 
