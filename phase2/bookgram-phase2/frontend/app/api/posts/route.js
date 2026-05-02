@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 import { getSessionUserId } from "@/src/lib/session.js";
-import { getAllPosts, createPost } from "@/src/lib/repository.js";
+import { Repository } from "@/src/lib/repository.js";
+
+const repo = new Repository();
 
 export async function GET() {
   try {
-    const posts = await getAllPosts();
+    const posts = await repo.getAllPosts();
     return NextResponse.json(posts);
   } catch (err) {
     console.error("GET /api/posts error:", err);
@@ -25,11 +27,11 @@ export async function POST(req) {
       );
     }
 
-    const post = await createPost({
+    const post = await repo.createPost(
       userId,
-      content: content.trim(),
-      imageUrl: imageUrl || null,
-    });
+      content.trim(),
+      imageUrl || null
+    );
 
     return NextResponse.json({ post }, { status: 201 });
   } catch (err) {

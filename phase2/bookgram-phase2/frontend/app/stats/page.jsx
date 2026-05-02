@@ -1,18 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function StatsPage() {
   const [stats, setStats] = useState(null);
   const [error, setError] = useState("");
 
-  useEffect(function () {
+  useEffect(() => {
     async function loadStats() {
       try {
-        const response = await fetch("/api/stats");
-        const data = await response.json();
+        const res = await fetch("/api/stats");
+        const data = await res.json();
 
-        if (!response.ok) {
+        if (!res.ok) {
           setError(data.error || "Could not load statistics.");
           return;
         }
@@ -26,66 +27,72 @@ export default function StatsPage() {
     loadStats();
   }, []);
 
-  if (error) {
-    return (
-      <main className="min-h-screen bg-[#3d3528] p-6 text-[#1c1710]">
-        <section className="mx-auto max-w-5xl bg-[#f5f0e8] p-6 shadow-2xl">
-          <h1 className="text-3xl italic">Bookgram Statistics</h1>
-          <p className="mt-4 text-red-700">{error}</p>
-        </section>
-      </main>
-    );
-  }
-
-  if (!stats) {
-    return (
-      <main className="min-h-screen bg-[#3d3528] p-6 text-[#1c1710]">
-        <section className="mx-auto max-w-5xl bg-[#f5f0e8] p-6 shadow-2xl">
-          <h1 className="text-3xl italic">Bookgram Statistics</h1>
-          <p className="mt-4">Loading statistics...</p>
-        </section>
-      </main>
-    );
-  }
-
-  const totals = stats.totals || {};
-
-  const cards = [
-    { title: "Users", value: totals.users || 0 },
-    { title: "Posts", value: totals.posts || 0 },
-    { title: "Likes", value: totals.likes || 0 },
-    { title: "Comments", value: totals.comments || 0 },
-    { title: "Average Followers Per User", value: stats.avgFollowersPerUser || 0 },
-    { title: "Average Posts Per User", value: stats.avgPostsPerUser || 0 },
-    { title: "Average Likes Per Post", value: stats.avgLikesPerPost || 0 },
-    { title: "Average Comments Per Post", value: stats.avgCommentsPerPost || 0 },
-  ];
-
   return (
     <main className="min-h-screen bg-[#3d3528] p-6 text-[#1c1710]">
-      <section className="mx-auto max-w-5xl bg-[#f5f0e8] p-6 shadow-2xl">
-        <div className="mb-6 border-b border-[#d8cdbd] pb-4">
-          <p className="text-xs uppercase tracking-widest text-[#8a7e6e]">
-            Bookgram
-          </p>
+      <section className="mx-auto max-w-3xl bg-[#f5f0e8] p-6 shadow-2xl">
+        <p className="text-xs uppercase tracking-widest text-[#8a7e6e]">
+          Bookgram
+        </p>
 
-          <h1 className="text-4xl italic">Platform Statistics</h1>
+        <h1 className="mt-2 text-4xl italic">Platform Statistics</h1>
 
-          <p className="mt-2 max-w-2xl text-sm text-[#3d3528]">
-            This page shows eight useful statistics about the Bookgram platform.
-          </p>
-        </div>
+        {error && <p className="mt-4 text-red-600">{error}</p>}
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {cards.map((card) => (
-            <div key={card.title} className="bg-white p-4 shadow">
-              <p className="text-xs uppercase tracking-widest text-[#8a7e6e]">
-                {card.title}
-              </p>
+        {!stats && !error && (
+          <p className="mt-4 text-sm text-[#8a7e6e]">Loading...</p>
+        )}
 
-              <p className="mt-3 text-3xl italic">{card.value}</p>
+        {stats && (
+          <div className="mt-6 space-y-6">
+            <div className="bg-white p-4 shadow">
+              <h2 className="text-xl italic">Total Users</h2>
+              <p>{stats.totals.users}</p>
             </div>
-          ))}
+
+            <div className="bg-white p-4 shadow">
+              <h2 className="text-xl italic">Total Posts</h2>
+              <p>{stats.totals.posts}</p>
+            </div>
+
+            <div className="bg-white p-4 shadow">
+              <h2 className="text-xl italic">Total Likes</h2>
+              <p>{stats.totals.likes}</p>
+            </div>
+
+            <div className="bg-white p-4 shadow">
+              <h2 className="text-xl italic">Total Comments</h2>
+              <p>{stats.totals.comments}</p>
+            </div>
+
+            <div className="bg-white p-4 shadow">
+              <h2 className="text-xl italic">Average Followers per User</h2>
+              <p>{stats.avgFollowersPerUser}</p>
+            </div>
+
+            <div className="bg-white p-4 shadow">
+              <h2 className="text-xl italic">Average Posts per User</h2>
+              <p>{stats.avgPostsPerUser}</p>
+            </div>
+
+            <div className="bg-white p-4 shadow">
+              <h2 className="text-xl italic">Average Likes per Post</h2>
+              <p>{stats.avgLikesPerPost}</p>
+            </div>
+
+            <div className="bg-white p-4 shadow">
+              <h2 className="text-xl italic">Average Comments per Post</h2>
+              <p>{stats.avgCommentsPerPost}</p>
+            </div>
+          </div>
+        )}
+
+        <div className="mt-6">
+          <Link
+            href="/posts"
+            className="rounded bg-[#3d3528] px-4 py-2 text-white"
+          >
+            Back to Posts
+          </Link>
         </div>
       </section>
     </main>

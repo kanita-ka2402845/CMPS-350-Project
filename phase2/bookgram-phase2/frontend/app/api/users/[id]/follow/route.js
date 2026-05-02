@@ -1,12 +1,11 @@
 import { NextResponse } from "next/server";
-import { getSessionUserId } from "@/src/lib/session.js";
-import { followUser, unfollowUser, isFollowing } from "@/src/lib/repository.js";
+import { prisma } from "@/src/lib/prisma.js";
 
 export async function POST(req, context) {
   try {
     const params = await context.params;
     const followingId = Number(params.id);
-    const followerId = (await getSessionUserId()) || 1;
+    const followerId = 1;
 
     if (!followingId) {
       return NextResponse.json({ error: "Invalid user id." }, { status: 400 });
@@ -19,17 +18,25 @@ export async function POST(req, context) {
       );
     }
 
-    const followingBefore = await isFollowing({ followerId, followingId });
+    const existing = await prisma.follow.findFirst({
+      where: { followerId, followingId },
+    });
 
-    if (followingBefore) {
-      await unfollowUser({ followerId, followingId });
+    if (existing) {
+      await prisma.follow.deleteMany({
+        where: { followerId, followingId },
+      });
+
       return NextResponse.json({ following: false });
     }
 
-    await followUser({ followerId, followingId });
+    await prisma.follow.create({
+      data: { followerId, followingId },
+    });
+
     return NextResponse.json({ following: true });
   } catch (err) {
-    console.error("Follow error:", err);
+    console.error("FOLLOW ERROR:", err);
     return NextResponse.json({ error: "Server error." }, { status: 500 });
   }
 }

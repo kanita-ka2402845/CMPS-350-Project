@@ -1,20 +1,13 @@
 import { prisma } from "./prisma.js";
 
-
 export class Repository {
-  // users
 
-  // used in login
+  //users
+
+  // used in login 
   async getUserByEmail(email) {
     return await prisma.user.findUnique({
-      where: { email },
-    });
-  }
-
-  // used in signup
-  async getUserByUsername(username) {
-    return await prisma.user.findUnique({
-      where: { username },
+      where: { email }
     });
   }
 
@@ -34,16 +27,17 @@ export class Repository {
           select: {
             posts: true,
             followers: true,
-            following: true,
-          },
-        },
-      },
+            following: true
+          }
+        }
+      }
     });
   }
 
+
   async createUser(email, username, password, fullName) {
     return await prisma.user.create({
-      data: { email, username, password, fullName },
+      data: { email, username, password, fullName }
     });
   }
 
@@ -54,12 +48,12 @@ export class Repository {
       data: {
         fullName: data.fullName,
         bio: data.bio,
-        profileImage: data.profileImage,
-      },
+        profileImage: data.profileImage
+      }
     });
   }
 
-  // posts
+  //posts
 
   // used in feed with newest posts first
   async getAllPosts() {
@@ -70,12 +64,12 @@ export class Repository {
           select: {
             id: true,
             username: true,
-            profileImage: true,
-          },
+            profileImage: true
+          }
         },
         likes: true,
-        comments: true,
-      },
+        comments: true
+      }
     });
   }
 
@@ -88,17 +82,17 @@ export class Repository {
           select: {
             id: true,
             username: true,
-            profileImage: true,
-          },
+            profileImage: true
+          }
         },
         likes: true,
         comments: {
           orderBy: { createdAt: "asc" },
           include: {
-            user: { select: { id: true, username: true } },
-          },
-        },
-      },
+            user: { select: { id: true, username: true } }
+          }
+        }
+      }
     });
   }
 
@@ -109,101 +103,96 @@ export class Repository {
       orderBy: { createdAt: "desc" },
       include: {
         likes: true,
-        comments: true,
-      },
+        comments: true
+      }
     });
   }
 
   async createPost(userId, content, imageUrl) {
     return await prisma.post.create({
-      data: { userId, content, imageUrl },
+      data: { userId, content, imageUrl }
     });
   }
 
   // used when deleting a post — only owner can do this
   async deletePost(id) {
     return await prisma.post.delete({
-      where: { id },
+      where: { id }
     });
   }
 
-  // likes
+  //likes
 
   async likePost(userId, postId) {
     return await prisma.like.create({
-      data: { userId, postId },
+      data: { userId, postId }
     });
   }
 
   async unlikePost(userId, postId) {
     return await prisma.like.deleteMany({
-      where: { userId, postId },
+      where: { userId, postId }
     });
   }
 
+
   async getLikeCount(postId) {
     return await prisma.like.count({
-      where: { postId },
+      where: { postId }
     });
   }
 
   // returns true/false, used to show filled/empty heart button
   async hasUserLiked(userId, postId) {
     const like = await prisma.like.findFirst({
-      where: { userId, postId },
+      where: { userId, postId }
     });
     return like !== null;
   }
 
-  // comments
+  //comments
 
   async getCommentsByPost(postId) {
     return await prisma.comment.findMany({
       where: { postId },
       orderBy: { createdAt: "asc" },
       include: {
-        user: { select: { id: true, username: true } },
-      },
+        user: { select: { id: true, username: true } }
+      }
     });
   }
 
+
   async addComment(userId, postId, content) {
     return await prisma.comment.create({
-      data: {
-        content,
-        user: {
-          connect: { id: userId },
-        },
-        post: {
-          connect: { id: postId },
-        },
-      },
+      data: { userId, postId, content }
     });
   }
 
   async deleteComment(id) {
-    return await prisma.comment.deleteMany({
-      where: { id },
+    return await prisma.comment.delete({
+      where: { id }
     });
   }
 
-  // follows
+  //follows
 
   async followUser(followerId, followingId) {
     return await prisma.follow.create({
-      data: { followerId, followingId },
+      data: { followerId, followingId }
     });
   }
 
   async unfollowUser(followerId, followingId) {
     return await prisma.follow.deleteMany({
-      where: { followerId, followingId },
+      where: { followerId, followingId }
     });
   }
 
+
   async isFollowing(followerId, followingId) {
     const follow = await prisma.follow.findFirst({
-      where: { followerId, followingId },
+      where: { followerId, followingId }
     });
     return follow !== null;
   }
@@ -213,9 +202,9 @@ export class Repository {
       where: { followingId: userId },
       include: {
         follower: {
-          select: { id: true, username: true, profileImage: true },
-        },
-      },
+          select: { id: true, username: true, profileImage: true }
+        }
+      }
     });
   }
 
@@ -224,225 +213,77 @@ export class Repository {
       where: { followerId: userId },
       include: {
         following: {
-          select: { id: true, username: true, profileImage: true },
-        },
-      },
+          select: { id: true, username: true, profileImage: true }
+        }
+      }
     });
   }
+
 
   async getFollowerCount(userId) {
     return await prisma.follow.count({
-      where: { followingId: userId },
+      where: { followingId: userId }
     });
   }
+
 
   async getFollowingCount(userId) {
     return await prisma.follow.count({
-      where: { followerId: userId },
+      where: { followerId: userId }
     });
   }
+
+
 
   // statistics
 
-  async mostLikedPost() {
-    return await prisma.post.findFirst({
-      orderBy: { likes: { _count: "desc" } },
-      include: {
-        user: { select: { username: true } },
-        _count: { select: { likes: true } },
-      },
-    });
-  }
 
-  async mostFollowers() {
-    return await prisma.user.findFirst({
-      orderBy: { followers: { _count: "desc" } },
-      select: {
-        username: true,
-        fullName: true,
-        _count: { select: { followers: true } },
-      },
-    });
-  }
 
-  async mostComments() {
-    return await prisma.post.findFirst({
-      orderBy: { comments: { _count: "desc" } },
-      include: {
-        user: { select: { username: true } },
-        _count: { select: { comments: true } },
-      },
-    });
-  }
-
-  async mostActiveUser() {
-    return await prisma.user.findFirst({
-      orderBy: { posts: { _count: "desc" } },
-      select: {
-        username: true,
-        fullName: true,
-        _count: { select: { posts: true } },
-      },
-    });
-  }
-
-  async getTotals() {
+  async getPlatformTotals() {
     const [users, posts, likes, comments] = await Promise.all([
       prisma.user.count(),
       prisma.post.count(),
       prisma.like.count(),
-      prisma.comment.count(),
-    ]);
-
-    return { users, posts, likes, comments };
+      prisma.comment.count()
+    ])
+    return { users, posts, likes, comments }
   }
 
-  async avgLikesPerPost() {
+  async getAvgLikesPerPost() {
     const result = await prisma.like.groupBy({
-      by: ["postId"],
-      _count: { postId: true },
-    });
-
-    if (result.length === 0) return 0;
-
-    const total = result.reduce((sum, r) => sum + r._count.postId, 0);
-
-    return (total / result.length).toFixed(1);
+      by: ['postId'],
+      _count: { postId: true }
+    })
+    if (result.length === 0) return 0
+    const total = result.reduce((sum, r) => sum + r._count.postId, 0)
+    return (total / result.length).toFixed(1)
   }
+
+  async getAvgFollowersPerUser() {
+    const [totalFollows, totalUsers] = await Promise.all([
+      prisma.follow.count(),
+      prisma.user.count()
+    ])
+    if (totalUsers === 0) return 0
+    return (totalFollows / totalUsers).toFixed(1)
+  }
+
+  async getAvgPostsPerUser() {
+    const [totalPosts, totalUsers] = await Promise.all([
+      prisma.post.count(),
+      prisma.user.count()
+    ])
+    if (totalUsers === 0) return 0
+    return (totalPosts / totalUsers).toFixed(1)
+  }
+
+  async getAvgCommentsPerPost() {
+    const [totalComments, totalPosts] = await Promise.all([
+      prisma.comment.count(),
+      prisma.post.count()
+    ])
+    if (totalPosts === 0) return 0
+    return (totalComments / totalPosts).toFixed(1)
+  }
+
 }
-
-const repo = new Repository();
-
-export const getUserByEmail = (email) => repo.getUserByEmail(email);
-
-export const getUserByUsername = (username) =>
-  repo.getUserByUsername(username);
-
-export const getUserById = (id) => repo.getUserById(id);
-
-export const createUser = ({ email, username, password, fullName }) =>
-  repo.createUser(email, username, password, fullName);
-
-export const getAllPosts = () => repo.getAllPosts();
-
-export const getPostById = (id) => repo.getPostById(id);
-
-export const getPostsByUser = (userId) => repo.getPostsByUser(userId);
-
-export const createPost = ({ userId, content, imageUrl }) =>
-  repo.createPost(userId, content, imageUrl);
-
-export const getPlatformTotals = () => repo.getTotals();
-
-export async function getAvgFollowersPerUser() {
-  const totals = await repo.getTotals();
-  if (!totals.users) return 0;
-
-  const followers = await prisma.follow.count();
-
-  return Number((followers / totals.users).toFixed(2));
-}
-
-export async function getAvgPostsPerUser() {
-  const totals = await repo.getTotals();
-  if (!totals.users) return 0;
-
-  return Number((totals.posts / totals.users).toFixed(2));
-}
-
-export async function getAvgLikesPerPost() {
-  return Number(await repo.avgLikesPerPost());
-}
-
-export async function getAvgCommentsPerPost() {
-  const totals = await repo.getTotals();
-  if (!totals.posts) return 0;
-
-  return Number((totals.comments / totals.posts).toFixed(2));
-}
-
-export async function getTopLikedPosts(limit = 5) {
-  return prisma.post.findMany({
-    orderBy: { likes: { _count: "desc" } },
-    take: limit,
-    select: {
-      id: true,
-      content: true,
-      createdAt: true,
-      user: {
-        select: {
-          username: true,
-          fullName: true,
-        },
-      },
-      _count: {
-        select: {
-          likes: true,
-          comments: true,
-        },
-      },
-    },
-  });
-}
-
-export async function getMostActiveUsers(limit = 5) {
-  return prisma.user.findMany({
-    orderBy: { posts: { _count: "desc" } },
-    take: limit,
-    select: {
-      id: true,
-      username: true,
-      fullName: true,
-      _count: {
-        select: {
-          posts: true,
-          followers: true,
-        },
-      },
-    },
-  });
-}
-
-export async function getMostFollowedUsers(limit = 5) {
-  return prisma.user.findMany({
-    orderBy: { followers: { _count: "desc" } },
-    take: limit,
-    select: {
-      id: true,
-      username: true,
-      fullName: true,
-      _count: {
-        select: {
-          followers: true,
-          posts: true,
-        },
-      },
-    },
-  });
-}
-
-export const likePost = ({ userId, postId }) =>
-  repo.likePost(userId, postId);
-
-export const unlikePost = ({ userId, postId }) =>
-  repo.unlikePost(userId, postId);
-
-export const hasUserLiked = ({ userId, postId }) =>
-  repo.hasUserLiked(userId, postId);
-
-// comments
-export const addComment = ({ userId, postId, content }) =>
-  repo.addComment(userId, postId, content);
-
-export const deleteComment = (id) =>
-  repo.deleteComment(id);
-
-// follow
-export const followUser = ({ followerId, followingId }) =>
-  repo.followUser(followerId, followingId);
-
-export const unfollowUser = ({ followerId, followingId }) =>
-  repo.unfollowUser(followerId, followingId);
-
-export const isFollowing = ({ followerId, followingId }) =>
-  repo.isFollowing(followerId, followingId);

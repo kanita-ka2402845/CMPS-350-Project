@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
-import { getUserById } from "@/src/lib/repository.js";
+import { Repository } from "@/src/lib/repository.js";
+
+const repo = new Repository();
 
 export async function GET(req, context) {
   try {
@@ -7,28 +9,18 @@ export async function GET(req, context) {
     const id = Number(params.id);
 
     if (!id) {
-      return NextResponse.json(
-        { error: "Invalid user id." },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Invalid user id." }, { status: 400 });
     }
 
-    const user = await getUserById(id);
+    const user = await repo.getUserById(id);
 
     if (!user) {
-      return NextResponse.json(
-        { error: "User not found." },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "User not found." }, { status: 404 });
     }
 
     return NextResponse.json({ user });
   } catch (err) {
     console.error("GET /api/users/[id] error:", err);
-
-    return NextResponse.json(
-      { error: "Server error." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Server error." }, { status: 500 });
   }
 }

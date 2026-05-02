@@ -1,35 +1,30 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/src/lib/prisma.js";
-import { getSessionUserId } from "@/src/lib/session.js";
 
 export async function POST(req, context) {
   try {
     const params = await context.params;
     const postId = Number(params.id);
-    const userId = (await getSessionUserId()) || 1;
+    const userId = 1;
 
-    const existing = await prisma.like.findUnique({
-      where: {
-        userId_postId: {
-          userId,
-          postId,
-        },
-      },
+    if (!postId) {
+      return NextResponse.json({ error: "Invalid post id." }, { status: 400 });
+    }
+
+    const existing = await prisma.like.findFirst({
+      where: { userId, postId },
     });
 
     if (existing) {
-      await prisma.like.delete({
-        where: { id: existing.id },
+      await prisma.like.deleteMany({
+        where: { userId, postId },
       });
 
       return NextResponse.json({ liked: false });
     }
 
     await prisma.like.create({
-      data: {
-        userId,
-        postId,
-      },
+      data: { userId, postId },
     });
 
     return NextResponse.json({ liked: true });
