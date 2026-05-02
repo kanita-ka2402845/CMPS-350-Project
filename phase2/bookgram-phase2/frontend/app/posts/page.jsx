@@ -57,7 +57,7 @@ export default function PostsPage() {
   }
 
   async function handleLike(postId) {
-    const res = await fetch(`/api/posts/${postId}/likes`, {      method: "POST",
+const res = await fetch(`/api/posts/${postId}/likes`, {      method: "POST",
     });
   
     const data = await res.json();
