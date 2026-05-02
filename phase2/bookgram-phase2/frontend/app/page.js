@@ -29,6 +29,13 @@ export default function HomePage() {
           >
             View Statistics
           </Link>
+
+          <Link
+            href="/login"
+            className="rounded border border-[#3d3528] px-4 py-2 text-sm text-[#3d3528]"
+          >
+            Login
+          </Link>
         </div>
       </section>
     </main>

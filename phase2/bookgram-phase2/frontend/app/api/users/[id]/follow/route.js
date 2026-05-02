@@ -1,22 +1,35 @@
-
 import { NextResponse } from "next/server";
 import { getSessionUserId } from "@/src/lib/session.js";
-import { updateUser } from "@/src/lib/repository.js";
+import { followUser, unfollowUser, isFollowing } from "@/src/lib/repository.js";
 
-
-export async function PATCH(req, { params }) {
+export async function POST(req, context) {
   try {
-    const userId = await getSessionUserId();
-    if (!userId) return NextResponse.json({ error: "Not authenticated." }, { status: 401 });
+    const params = await context.params;
+    const followingId = Number(params.id);
+    const followerId = (await getSessionUserId()) || 1;
 
-    const targetId = parseInt(params.id, 10);
-    if (userId !== targetId) return NextResponse.json({ error: "Forbidden." }, { status: 403 });
+    if (!followingId) {
+      return NextResponse.json({ error: "Invalid user id." }, { status: 400 });
+    }
 
-    const { fullName, bio, profileImage } = await req.json();
-    const user = await updateUser(userId, { fullName, bio, profileImage });
-    return NextResponse.json({ user });
+    if (followerId === followingId) {
+      return NextResponse.json(
+        { error: "You cannot follow yourself." },
+        { status: 400 }
+      );
+    }
+
+    const followingBefore = await isFollowing({ followerId, followingId });
+
+    if (followingBefore) {
+      await unfollowUser({ followerId, followingId });
+      return NextResponse.json({ following: false });
+    }
+
+    await followUser({ followerId, followingId });
+    return NextResponse.json({ following: true });
   } catch (err) {
-    console.error("PATCH /api/users/[id]/profile error:", err);
+    console.error("Follow error:", err);
     return NextResponse.json({ error: "Server error." }, { status: 500 });
   }
 }

@@ -1,37 +1,37 @@
-
 import { NextResponse } from "next/server";
+import { prisma } from "@/src/lib/prisma.js";
 import { getSessionUserId } from "@/src/lib/session.js";
-import { getCommentsByPost, addComment } from "@/src/lib/repository.js";
 
-
-export async function GET(_req, { params }) {
+export async function POST(req, context) {
   try {
-    const comments = await getCommentsByPost(parseInt(params.id, 10));
-    return NextResponse.json({ comments });
-  } catch (err) {
-    console.error("GET /api/posts/[id]/comments error:", err);
-    return NextResponse.json({ error: "Server error." }, { status: 500 });
-  }
-}
+    const params = await context.params;
+    const postId = Number(params.id);
+    const userId = (await getSessionUserId()) || 1;
 
-export async function POST(req, { params }) {
-  try {
-    const userId = await getSessionUserId();
-    if (!userId) return NextResponse.json({ error: "Not authenticated." }, { status: 401 });
-
-    const { content } = await req.json();
-    if (!content?.trim()) {
-      return NextResponse.json({ error: "Comment cannot be empty." }, { status: 400 });
+    if (!postId) {
+      return NextResponse.json({ error: "Invalid post id." }, { status: 400 });
     }
 
-    const comment = await addComment({
-      userId,
-      postId:  parseInt(params.id, 10),
-      content: content.trim(),
+    const { content } = await req.json();
+
+    if (!content || !content.trim()) {
+      return NextResponse.json(
+        { error: "Comment cannot be empty." },
+        { status: 400 }
+      );
+    }
+
+    const comment = await prisma.comment.create({
+      data: {
+        content: content.trim(),
+        userId,
+        postId,
+      },
     });
+
     return NextResponse.json({ comment }, { status: 201 });
   } catch (err) {
-    console.error("POST /api/posts/[id]/comments error:", err);
+    console.error("COMMENT ERROR:", err);
     return NextResponse.json({ error: "Server error." }, { status: 500 });
   }
 }

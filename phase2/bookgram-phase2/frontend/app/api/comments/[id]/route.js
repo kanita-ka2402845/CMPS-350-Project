@@ -1,20 +1,25 @@
-
 import { NextResponse } from "next/server";
-import { getSessionUserId } from "@/src/lib/session.js";
-import { deleteComment } from "@/src/lib/repository.js";
- 
+import { prisma } from "@/src/lib/prisma.js";
 
-export async function DELETE(_req, { params }) {
+export async function DELETE(req, context) {
   try {
-    const userId = await getSessionUserId();
-    if (!userId) return NextResponse.json({ error: "Not authenticated." }, { status: 401 });
- 
-    await deleteComment(parseInt(params.id, 10), userId);
-    return NextResponse.json({ ok: true });
+    const params = await context.params;
+    const id = Number(params.id);
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Invalid comment id." },
+        { status: 400 }
+      );
+    }
+
+    await prisma.comment.deleteMany({
+      where: { id },
+    });
+
+    return NextResponse.json({ deleted: true });
   } catch (err) {
-    if (err.message === "Forbidden")           return NextResponse.json({ error: "Forbidden." },           { status: 403 });
-    if (err.message === "Comment not found")   return NextResponse.json({ error: "Comment not found." },   { status: 404 });
-    console.error("DELETE /api/comments/[id] error:", err);
+    console.error("DELETE COMMENT ERROR:", err);
     return NextResponse.json({ error: "Server error." }, { status: 500 });
   }
 }

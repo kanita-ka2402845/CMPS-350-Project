@@ -1,22 +1,17 @@
-
 import { NextResponse } from "next/server";
 import { getSessionUserId } from "@/src/lib/session.js";
-import { updateUser } from "@/src/lib/repository.js";
+import { getUserById, getPostsByUser } from "@/src/lib/repository.js";
 
-
-export async function PATCH(req, { params }) {
+export async function GET() {
   try {
-    const userId = await getSessionUserId();
-    if (!userId) return NextResponse.json({ error: "Not authenticated." }, { status: 401 });
+    const userId = (await getSessionUserId()) || 1;
 
-    const targetId = parseInt(params.id, 10);
-    if (userId !== targetId) return NextResponse.json({ error: "Forbidden." }, { status: 403 });
+    const user = await getUserById(userId);
+    const posts = await getPostsByUser(userId);
 
-    const { fullName, bio, profileImage } = await req.json();
-    const user = await updateUser(userId, { fullName, bio, profileImage });
-    return NextResponse.json({ user });
+    return NextResponse.json({ user, posts });
   } catch (err) {
-    console.error("PATCH /api/users/[id]/profile error:", err);
+    console.error("GET /api/profile error:", err);
     return NextResponse.json({ error: "Server error." }, { status: 500 });
   }
 }
